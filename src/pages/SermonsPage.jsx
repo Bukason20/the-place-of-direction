@@ -29,7 +29,7 @@ const SermonsPage = () => {
     const fetchSermons = async () => {
       try {
         const data = await sermonService.getAllSermons();
-        setAllSermons(data.data);
+        setAllSermons(data?.data || []);
       } catch (error) {
         console.error("Failed to fetch sermons:", error);
       } finally {

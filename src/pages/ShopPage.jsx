@@ -32,7 +32,7 @@ const ShopPage = () => {
     const fetchBooks = async () => {
       try {
         const data = await bookService.getAllBooks();
-        setBooks(data.data);
+        setBooks(data?.data || []);
       } catch (error) {
         console.error("Failed to fetch books:", error);
       } finally {

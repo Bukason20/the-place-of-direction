@@ -14,7 +14,7 @@ function LatestSermonSection() {
     const fetchLatestSermon = async () => {
       try {
         const data = await sermonService.getAllSermons();
-        const sermons = data.data;
+        const sermons = data?.data || [];
 
         // Sort by date descending and pick the most recent
         const sorted = sermons.sort(

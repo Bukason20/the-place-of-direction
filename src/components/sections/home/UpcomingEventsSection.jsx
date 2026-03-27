@@ -48,7 +48,7 @@ function UpcomingEventsSection() {
     const fetchEvents = async () => {
       try {
         const data = await eventService.getAllSermons();
-        const allEvents = data.data;
+        const allEvents = data?.data || [];
 
         // Filter to only future/ongoing events and sort by date ascending
         const futureEvents = allEvents

@@ -67,11 +67,14 @@ function HeroSection() {
             </button>
           </div>
 
-          <div className="bg-transparent backdrop-blur-md max-w-[70%] mx-auto mt-10 rounded-2xl shadow-2xl py-8 px-12">
+          <div
+            className="bg-transparent backdrop-blur-md
+          max-w-full md:max-w-[70%] mx-auto mt-10 rounded-2xl shadow-2xl py-3 md:py-8 px-4 md:px-12"
+          >
             <h3 className="font-bold text-purple-400 mb-5">
               Join Us This Week
             </h3>
-            <div className="flex justify-between">
+            <div className="flex justify-between gap-3">
               {heroDetails.map((detail, i) => (
                 <div key={i}>
                   <h6 className="font-extrabold text-sm bg-gradient-to-r from-cyan-200 to-blue-300 text-transparent bg-clip-text">

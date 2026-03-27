@@ -29,7 +29,7 @@ function EventsPage() {
     const fetchEvents = async () => {
       try {
         const data = await eventService.getAllSermons();
-        setAllEvents(data.data);
+        setAllEvents(data?.data || []);
       } catch (error) {
         console.error("Failed to fetch events:", error);
       } finally {
