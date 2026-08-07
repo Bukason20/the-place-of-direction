@@ -11,7 +11,13 @@ import CartPage from "../pages/CartPage";
 import OrderSuccessPage from "../pages/OrderSuccessPage";
 import LoginPage from "../pages/admin/LoginPage";
 import AdminLayout from "../pages/admin/AdminLayout";
-import DashboardPage from "../pages/admin/DashboardPage";
+import DashboardLayout from "../pages/admin/DashboardLayout";
+import StatsOverview from "../components/admin/dashboard/StatsOverview";
+import SermonManager from "../components/admin/dashboard/SermonManager";
+import EventManager from "../components/admin/dashboard/EventManager";
+import BookManager from "../components/admin/dashboard/BookManager";
+import OrdersManager from "../components/admin/dashboard/OrdersManager";
+import OneOnOneManager from "../components/admin/dashboard/OneOnOneManager";
 import OrderCallbackPage from "../pages/OrderCallbackPage";
 import OneOnOneRegistrationPage from "../pages/OneOnOneRegistrationPage";
 
@@ -38,7 +44,15 @@ function Routy() {
             {/* ── Admin Routes ── */}
             <Route path="/admin" element={<AdminLayout />}>
               <Route index element={<LoginPage />} />
-              <Route path="dashboard" element={<DashboardPage />} />
+
+              <Route path="dashboard" element={<DashboardLayout />}>
+                <Route index element={<StatsOverview />} />
+                <Route path="sermons" element={<SermonManager />} />
+                <Route path="events" element={<EventManager />} />
+                <Route path="books" element={<BookManager />} />
+                <Route path="orders" element={<OrdersManager />} />
+                <Route path="one-on-one" element={<OneOnOneManager />} />
+              </Route>
             </Route>
           </Routes>
         </main>

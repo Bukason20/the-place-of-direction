@@ -4,32 +4,40 @@ import {
   Headphones,
   Calendar,
   BookOpen,
+  ShoppingCart,
+  Users,
   LogOut,
   Shield,
   X,
 } from "lucide-react";
 import { useAuth } from "../../../context/AuthContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 
 const navItems = [
-  { id: "overview", label: "Overview", icon: LayoutDashboard },
-  { id: "sermons", label: "Sermons", icon: Headphones },
-  { id: "events", label: "Events", icon: Calendar },
-  { id: "books", label: "Books", icon: BookOpen },
+  { id: "overview", label: "Overview", icon: LayoutDashboard, path: "" },
+  { id: "sermons", label: "Sermons", icon: Headphones, path: "sermons" },
+  { id: "events", label: "Events", icon: Calendar, path: "events" },
+  { id: "books", label: "Books", icon: BookOpen, path: "books" },
+  { id: "orders", label: "Orders", icon: ShoppingCart, path: "orders" },
+  {
+    id: "one-on-one",
+    label: "One-on-One",
+    icon: Users,
+    path: "one-on-one",
+  },
 ];
 
-const Sidebar = ({ activeTab, setActiveTab, mobileOpen, setMobileOpen }) => {
+const Sidebar = ({ mobileOpen, setMobileOpen }) => {
   const { logout, user } = useAuth();
   const navigateTo = useNavigate();
 
   const handleLogout = () => {
     logout();
-    navigateTo("/login");
+    navigateTo("/admin");
   };
 
   return (
     <>
-      {/* Mobile overlay */}
       {mobileOpen && (
         <div
           className="fixed inset-0 bg-black/50 z-20 lg:hidden"
@@ -41,7 +49,6 @@ const Sidebar = ({ activeTab, setActiveTab, mobileOpen, setMobileOpen }) => {
         className={`fixed top-0 left-0 h-full w-64 bg-gradient-to-b from-slate-900 via-blue-900/80 to-slate-900 border-r border-white/10 z-30 transform transition-transform duration-300
         ${mobileOpen ? "translate-x-0" : "-translate-x-full"} lg:translate-x-0`}
       >
-        {/* Logo */}
         <div className="p-6 border-b border-white/10">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -64,7 +71,6 @@ const Sidebar = ({ activeTab, setActiveTab, mobileOpen, setMobileOpen }) => {
           </div>
         </div>
 
-        {/* User info */}
         <div className="px-6 py-4 border-b border-white/10">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-cyan-400 to-blue-500 flex items-center justify-center text-white font-bold text-sm">
@@ -81,29 +87,28 @@ const Sidebar = ({ activeTab, setActiveTab, mobileOpen, setMobileOpen }) => {
           </div>
         </div>
 
-        {/* Nav items */}
         <nav className="p-4 flex-1 space-y-1">
-          {navItems.map(({ id, label, icon: Icon }) => (
-            <button
+          {navItems.map(({ id, label, icon: Icon, path }) => (
+            <NavLink
               key={id}
-              onClick={() => {
-                setActiveTab(id);
-                setMobileOpen(false);
-              }}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition
+              to={`/admin/dashboard${path ? `/${path}` : ""}`}
+              end={path === ""}
+              onClick={() => setMobileOpen(false)}
+              className={({ isActive }) =>
+                `w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition
                 ${
-                  activeTab === id
+                  isActive
                     ? "bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg"
                     : "text-blue-200 hover:bg-white/10 hover:text-white"
-                }`}
+                }`
+              }
             >
               <Icon size={18} />
               {label}
-            </button>
+            </NavLink>
           ))}
         </nav>
 
-        {/* Logout */}
         <div className="p-4 border-t border-white/10">
           <button
             onClick={handleLogout}
