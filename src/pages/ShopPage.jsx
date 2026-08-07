@@ -1,11 +1,11 @@
-import { BookOpen, Tag, MessageCircle } from "lucide-react";
+import { BookOpen, Tag, ShoppingCart, Check } from "lucide-react";
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { HeroBg } from "../assets";
 import Navbar from "../components/Navbar";
 import bookService from "../services/books";
 import { MEDIA_BASE_URL } from "../services/api";
-
-const WHATSAPP_NUMBER = "2348128276293";
+import { useCart } from "../context/CartContext";
 
 const gradients = [
   "from-blue-500 to-cyan-500",
@@ -16,17 +16,12 @@ const gradients = [
   "from-yellow-500 to-orange-500",
 ];
 
-const openWhatsApp = (book) => {
-  const message =
-    `Hello! 👋 I'd like to purchase *${book.title}* ` +
-    `for *₦${book.price.toLocaleString()}*. Please let me know how to proceed. Thank you!`;
-  const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-  window.open(url, "_blank");
-};
-
 const ShopPage = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [addedIds, setAddedIds] = useState([]);
+  const { addToCart, totalItems } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchBooks = async () => {
@@ -43,6 +38,14 @@ const ShopPage = () => {
     fetchBooks();
   }, []);
 
+  const handleAddToCart = (book) => {
+    addToCart(book);
+    setAddedIds((prev) => [...prev, book.id]);
+    setTimeout(() => {
+      setAddedIds((prev) => prev.filter((id) => id !== book.id));
+    }, 1500);
+  };
+
   return (
     <>
       {/* ── HERO ── */}
@@ -57,7 +60,6 @@ const ShopPage = () => {
         />
         <div className="absolute inset-0 bg-gradient-to-br from-blue-900/65 via-purple-900/55 to-slate-900/70" />
         <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent" />
-
         <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-400 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-pulse" />
         <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-pulse" />
 
@@ -80,23 +82,37 @@ const ShopPage = () => {
       {/* ── PRODUCTS ── */}
       <section className="bg-gradient-to-b from-gray-50 to-white py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-14">
-            <span className="inline-block text-xs font-bold tracking-[0.3em] uppercase text-blue-600 mb-2">
-              All Products
-            </span>
-            <h2 className="text-4xl font-black text-gray-900">
-              Spiritual Resources
-            </h2>
+          <div className="flex items-center justify-between mb-14">
+            <div>
+              <span className="inline-block text-xs font-bold tracking-[0.3em] uppercase text-blue-600 mb-2">
+                All Products
+              </span>
+              <h2 className="text-4xl font-black text-gray-900">
+                Spiritual Resources
+              </h2>
+            </div>
+
+            {/* Cart button */}
+            {totalItems > 0 && (
+              <button
+                onClick={() => navigate("/cart")}
+                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-5 py-3 rounded-xl font-bold hover:shadow-lg hover:scale-105 transition relative"
+              >
+                <ShoppingCart size={20} />
+                <span>View Cart</span>
+                <span className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white text-xs font-black rounded-full flex items-center justify-center">
+                  {totalItems}
+                </span>
+              </button>
+            )}
           </div>
 
-          {/* Loading state */}
           {loading && (
             <div className="text-center py-20 text-gray-400 text-lg font-medium">
               Loading resources...
             </div>
           )}
 
-          {/* Empty state */}
           {!loading && books.length === 0 && (
             <div className="text-center py-20 text-gray-400 text-lg font-medium">
               No resources available yet. Check back soon!
@@ -110,6 +126,7 @@ const ShopPage = () => {
                 book.image?.formats?.medium?.url ||
                 book.image?.formats?.small?.url ||
                 book.image?.url;
+              const isAdded = addedIds.includes(book.id);
 
               return (
                 <div key={book.id} className="group relative">
@@ -136,7 +153,6 @@ const ShopPage = () => {
                         </div>
                       )}
                       <div className="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition" />
-                      {/* Book badge */}
                       <span className="absolute top-4 left-4 flex items-center gap-1 bg-black/40 backdrop-blur-sm text-white text-xs font-bold px-3 py-1 rounded-full">
                         <Tag size={10} />
                         Book
@@ -157,11 +173,25 @@ const ShopPage = () => {
                           ₦{book.price.toLocaleString()}
                         </span>
                         <button
-                          onClick={() => openWhatsApp(book)}
-                          className="flex items-center gap-2 bg-[#25D366] hover:bg-[#1ebe5d] text-white px-4 py-2 rounded-xl font-bold text-sm hover:shadow-lg hover:scale-105 transition"
+                          onClick={() => handleAddToCart(book)}
+                          className={`flex items-center gap-2 px-4 py-2 rounded-xl font-bold text-sm hover:shadow-lg hover:scale-105 transition
+                            ${
+                              isAdded
+                                ? "bg-green-500 text-white"
+                                : "bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+                            }`}
                         >
-                          <MessageCircle size={16} />
-                          <span>Buy Now</span>
+                          {isAdded ? (
+                            <>
+                              <Check size={16} />
+                              <span>Added!</span>
+                            </>
+                          ) : (
+                            <>
+                              <ShoppingCart size={16} />
+                              <span>Add to Cart</span>
+                            </>
+                          )}
                         </button>
                       </div>
                     </div>
@@ -177,15 +207,23 @@ const ShopPage = () => {
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-10" />
             <div className="relative">
               <div className="inline-flex p-4 bg-white/10 rounded-2xl mb-6">
-                <MessageCircle size={36} className="text-[#25D366]" />
+                <ShoppingCart size={36} className="text-cyan-300" />
               </div>
               <h2 className="text-4xl font-black mb-4">
                 Ready to Get Started?
               </h2>
-              <p className="text-lg opacity-90 max-w-xl mx-auto">
-                Invest in your spiritual growth today. Click any product and
-                place your order directly via WhatsApp — quick and easy.
+              <p className="text-lg opacity-90 max-w-xl mx-auto mb-8">
+                Invest in your spiritual growth today. Add books to your cart
+                and checkout securely.
               </p>
+              {totalItems > 0 && (
+                <button
+                  onClick={() => navigate("/cart")}
+                  className="bg-white text-blue-600 px-10 py-4 rounded-xl font-bold hover:shadow-lg hover:scale-105 transition text-lg"
+                >
+                  View Cart ({totalItems} {totalItems === 1 ? "item" : "items"})
+                </button>
+              )}
             </div>
           </div>
         </div>

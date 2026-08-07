@@ -9,10 +9,13 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { HeroBg } from "../assets";
 import Navbar from "../components/Navbar";
 
 const OneonOnePage = () => {
+  const navigate = useNavigate();
+
   return (
     <>
       {/* ── HERO ── */}
@@ -89,7 +92,10 @@ const OneonOnePage = () => {
                 ))}
               </ul>
 
-              <button className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-xl font-bold hover:shadow-xl hover:scale-105 transition text-lg">
+              <button
+                onClick={() => navigate("/one-on-one/register")}
+                className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-xl font-bold hover:shadow-xl hover:scale-105 transition text-lg"
+              >
                 <span>Schedule a Session</span>
                 <ChevronRight size={20} />
               </button>
@@ -245,7 +251,10 @@ const OneonOnePage = () => {
           <p className="text-blue-200 text-xl mb-10">
             Take the first step toward discovering your God-given destiny
           </p>
-          <button className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-900 px-10 py-4 rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition text-lg">
+          <button
+            onClick={() => navigate("/one-on-one/register")}
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-400 to-blue-500 text-slate-900 px-10 py-4 rounded-xl font-bold hover:shadow-2xl hover:scale-105 transition text-lg"
+          >
             <span>Schedule a Session</span>
             <ChevronRight size={20} />
           </button>

@@ -7,13 +7,18 @@ import SermonsPage from "../pages/SermonsPage";
 import EventsPage from "../pages/EventsPage";
 import OneonOnePage from "../pages/OneonOnePage";
 import ShopPage from "../pages/ShopPage";
-import Navbar from "../components/Navbar";
+import CartPage from "../pages/CartPage";
+import OrderSuccessPage from "../pages/OrderSuccessPage";
+import LoginPage from "../pages/admin/LoginPage";
+import AdminLayout from "../pages/admin/AdminLayout";
+import DashboardPage from "../pages/admin/DashboardPage";
+import OrderCallbackPage from "../pages/OrderCallbackPage";
+import OneOnOneRegistrationPage from "../pages/OneOnOneRegistrationPage";
 
 function Routy() {
   return (
     <BrowserRouter>
       <div className="min-h-screen flex flex-col">
-        {/* <Navbar /> */}
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<HomePage />} />
@@ -21,7 +26,20 @@ function Routy() {
             <Route path="/sermons" element={<SermonsPage />} />
             <Route path="/events" element={<EventsPage />} />
             <Route path="/one-on-one" element={<OneonOnePage />} />
+            <Route
+              path="/one-on-one/register"
+              element={<OneOnOneRegistrationPage />}
+            />
             <Route path="/shop" element={<ShopPage />} />
+            <Route path="/cart" element={<CartPage />} />
+            <Route path="/order-callback" element={<OrderCallbackPage />} />
+            <Route path="/order-success" element={<OrderSuccessPage />} />
+
+            {/* ── Admin Routes ── */}
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<LoginPage />} />
+              <Route path="dashboard" element={<DashboardPage />} />
+            </Route>
           </Routes>
         </main>
         <Footer />
