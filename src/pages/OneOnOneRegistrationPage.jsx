@@ -52,7 +52,6 @@ const emptyForm = {
   otherLocationDetail: "",
   numberOfTimes: "",
   howHeardAboutUs: "",
-  expectations: "",
   wantsUpdates: null,
   whatsappNumber: "",
   familyMembers: "",
@@ -136,7 +135,6 @@ const OneOnOneRegistrationPage = () => {
           form.preferredLocation === "Other" ? form.otherLocationDetail : "",
         numberOfTimes: Number(form.numberOfTimes),
         howHeardAboutUs: form.howHeardAboutUs,
-        expectations: form.expectations,
       };
 
       if (category === "personal") {
@@ -502,17 +500,6 @@ const OneOnOneRegistrationPage = () => {
                 onChange={(e) => update("howHeardAboutUs", e.target.value)}
                 placeholder="e.g. Instagram, a friend, church"
                 className={inputClass}
-              />
-            </div>
-
-            <div>
-              <label className={labelClass}>What are your expectations?</label>
-              <textarea
-                rows={3}
-                value={form.expectations}
-                onChange={(e) => update("expectations", e.target.value)}
-                placeholder="Tell us what you're hoping to get from this session"
-                className={`${inputClass} resize-none`}
               />
             </div>
 
