@@ -2,11 +2,12 @@ import {
   Users,
   ChevronRight,
   Target,
-  TrendingUp,
-  CheckCircle,
+  Sparkles,
   Compass,
   Award,
-  ShieldCheck,
+  User,
+  Briefcase,
+  CalendarClock,
 } from "lucide-react";
 import React from "react";
 import { useNavigate } from "react-router-dom";
@@ -38,9 +39,14 @@ const OneonOnePage = () => {
         <div className="absolute bottom-0 right-0 w-72 h-72 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-pulse" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-40 pb-24">
-          <span className="inline-block text-xs font-bold tracking-[0.3em] uppercase text-cyan-400 mb-4">
-            Personal Growth
-          </span>
+          {/* Annual program banner */}
+          <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur border border-white/20 rounded-full px-5 py-2 mb-6">
+            <CalendarClock size={16} className="text-cyan-300" />
+            <span className="text-xs font-bold tracking-[0.2em] uppercase text-cyan-300">
+              An Annual Prophetic Program
+            </span>
+          </div>
+
           <h1 className="text-6xl lg:text-7xl font-black mb-6 leading-tight drop-shadow-2xl">
             One-on-One{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-blue-300 to-purple-300">
@@ -48,7 +54,12 @@ const OneonOnePage = () => {
             </span>
           </h1>
           <p className="text-xl text-blue-100 max-w-3xl mx-auto font-light drop-shadow-lg">
-            Personalized guidance for your journey of purpose
+            A prophetic mentoring program designed to give you the word of the
+            Lord and direction in your life, your family, and your business.
+          </p>
+          <p className="text-lg text-cyan-200 max-w-2xl mx-auto font-medium mt-4">
+            Choose one or all of the programs as you are led — and hear the
+            voice of the Lord.
           </p>
         </div>
       </section>
@@ -60,37 +71,19 @@ const OneonOnePage = () => {
           <div className="grid md:grid-cols-2 gap-16 mb-20 items-center">
             <div>
               <span className="inline-block text-xs font-bold tracking-[0.3em] uppercase text-blue-600 mb-3">
-                Tailored For You
+                What It Is
               </span>
               <h2 className="text-5xl font-black text-gray-900 mb-6">
-                Personalized Mentoring
+                Prophetic Direction, Once a Year
               </h2>
               <p className="text-gray-600 text-lg mb-6 leading-relaxed">
-                Experience personalized mentoring designed specifically for you.
-                Our experienced leaders provide one-on-one guidance to help you
-                discover your purpose, overcome obstacles, and step into your
-                God-given destiny.
+                Once a year, we open the doors to One-on-One — a season set
+                apart to sit before the Lord with one of our leaders and receive
+                prophetic direction that is specific to you. Whether it's
+                clarity for your personal life, covering for your family, or
+                direction for your business, this is a moment to pause and hear
+                what the Lord is saying over the next season of your life.
               </p>
-
-              <ul className="space-y-4 mb-10">
-                {[
-                  "Purpose Discovery",
-                  "Spiritual Growth",
-                  "Leadership Development",
-                  "Life Direction",
-                ].map((item, i) => (
-                  <li
-                    key={i}
-                    className="flex items-center space-x-4 text-gray-700"
-                  >
-                    <CheckCircle
-                      size={20}
-                      className="text-blue-600 flex-shrink-0"
-                    />
-                    <span className="font-bold text-lg">{item}</span>
-                  </li>
-                ))}
-              </ul>
 
               <button
                 onClick={() => navigate("/one-on-one/register")}
@@ -107,20 +100,20 @@ const OneonOnePage = () => {
               <div className="relative bg-gradient-to-br from-blue-100 to-purple-100 h-96 rounded-2xl flex items-center justify-center shadow-xl border border-blue-100">
                 <div className="text-center">
                   <div className="inline-flex p-6 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full mb-4 shadow-2xl">
-                    <Users size={64} className="text-white" />
+                    <Sparkles size={64} className="text-white" />
                   </div>
                   <p className="text-gray-700 font-black text-xl">
-                    Transform Your Life
+                    Hear the Voice of the Lord
                   </p>
                   <p className="text-gray-500 text-sm mt-1">
-                    One conversation at a time
+                    Direction for this next season
                   </p>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* ── WHAT YOU'LL GAIN ── */}
+          {/* ── THE THREE PROGRAMS ── */}
           <div className="bg-gradient-to-br from-slate-900 via-blue-900/50 to-slate-900 rounded-3xl p-16 shadow-2xl relative overflow-hidden">
             <div className="absolute top-0 right-0 w-72 h-72 bg-cyan-400 rounded-full mix-blend-screen filter blur-3xl opacity-10" />
             <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-10" />
@@ -128,49 +121,53 @@ const OneonOnePage = () => {
             <div className="relative">
               <div className="text-center mb-12">
                 <span className="inline-block text-xs font-bold tracking-[0.3em] uppercase text-cyan-400 mb-3">
-                  Benefits
+                  Choose Your Track
                 </span>
-                <h2 className="text-4xl font-black text-white">
-                  What You'll Gain
+                <h2 className="text-4xl font-black text-white mb-3">
+                  Three Programs, One Word
                 </h2>
+                <p className="text-blue-200 max-w-2xl mx-auto">
+                  You're welcome to register for one — or all three, as the Lord
+                  leads you.
+                </p>
               </div>
 
               <div className="grid md:grid-cols-3 gap-8">
                 {[
                   {
-                    icon: <Compass size={40} className="text-cyan-300" />,
-                    title: "Clear Direction",
-                    desc: "Gain clarity on your purpose and your very next steps forward",
+                    icon: <User size={40} className="text-cyan-300" />,
+                    title: "Personal",
+                    desc: "One-on-one time to receive direction for your own life, purpose, and the season ahead.",
                     color: "from-cyan-500/20 to-blue-500/20",
                     border: "border-cyan-500/30",
                   },
                   {
-                    icon: <TrendingUp size={40} className="text-purple-300" />,
-                    title: "Personal Growth",
-                    desc: "Develop your character, leadership, and spiritual depth",
+                    icon: <Users size={40} className="text-purple-300" />,
+                    title: "Family",
+                    desc: "Prophetic covering and direction for you and your household — nuclear family included.",
                     color: "from-purple-500/20 to-pink-500/20",
                     border: "border-purple-500/30",
                   },
                   {
-                    icon: <ShieldCheck size={40} className="text-yellow-300" />,
-                    title: "Accountability",
-                    desc: "Consistent support and accountability to help you achieve your goals",
+                    icon: <Briefcase size={40} className="text-yellow-300" />,
+                    title: "Business",
+                    desc: "Direction for your business or organization, whether you're an SME or a larger corporate team.",
                     color: "from-yellow-500/20 to-orange-500/20",
                     border: "border-yellow-500/30",
                   },
-                ].map((benefit, i) => (
+                ].map((program, i) => (
                   <div
                     key={i}
-                    className={`bg-gradient-to-br ${benefit.color} border ${benefit.border} rounded-2xl p-8 text-center hover:scale-105 transition duration-300`}
+                    className={`bg-gradient-to-br ${program.color} border ${program.border} rounded-2xl p-8 text-center hover:scale-105 transition duration-300`}
                   >
                     <div className="flex justify-center mb-4">
-                      {benefit.icon}
+                      {program.icon}
                     </div>
                     <h3 className="text-xl font-black text-white mb-3">
-                      {benefit.title}
+                      {program.title}
                     </h3>
                     <p className="text-gray-300 leading-relaxed text-sm">
-                      {benefit.desc}
+                      {program.desc}
                     </p>
                   </div>
                 ))}
@@ -193,22 +190,22 @@ const OneonOnePage = () => {
                 {
                   step: "01",
                   icon: <Target size={28} className="text-white" />,
-                  title: "Book a Session",
-                  desc: "Reach out to schedule your first one-on-one mentoring session with one of our leaders.",
+                  title: "Register",
+                  desc: "Choose your track — Personal, Family, or Business — and complete a short registration form.",
                   color: "from-blue-500 to-cyan-500",
                 },
                 {
                   step: "02",
-                  icon: <Users size={28} className="text-white" />,
-                  title: "Meet Your Mentor",
-                  desc: "Connect personally with an experienced leader who will walk alongside you.",
+                  icon: <Compass size={28} className="text-white" />,
+                  title: "Meet Your Leader",
+                  desc: "Sit one-on-one with a leader at your preferred location for this year's program.",
                   color: "from-purple-500 to-pink-500",
                 },
                 {
                   step: "03",
                   icon: <Award size={28} className="text-white" />,
-                  title: "Step Into Destiny",
-                  desc: "Receive guidance, accountability, and prophetic direction for your unique journey.",
+                  title: "Receive Direction",
+                  desc: "Walk away with prophetic direction and clarity for the season ahead.",
                   color: "from-yellow-500 to-orange-500",
                 },
               ].map((step, i) => (
@@ -249,7 +246,8 @@ const OneonOnePage = () => {
         <div className="relative max-w-3xl mx-auto px-4">
           <h2 className="text-5xl font-black mb-4">Ready to Begin?</h2>
           <p className="text-blue-200 text-xl mb-10">
-            Take the first step toward discovering your God-given destiny
+            Choose your track and take the first step toward hearing the voice
+            of the Lord for this season.
           </p>
           <button
             onClick={() => navigate("/one-on-one/register")}

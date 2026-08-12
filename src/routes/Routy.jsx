@@ -20,10 +20,12 @@ import OrdersManager from "../components/admin/dashboard/OrdersManager";
 import OneOnOneManager from "../components/admin/dashboard/OneOnOneManager";
 import OrderCallbackPage from "../pages/OrderCallbackPage";
 import OneOnOneRegistrationPage from "../pages/OneOnOneRegistrationPage";
+import ScrollToTop from "../components/ScrollToTop";
 
 function Routy() {
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <div className="min-h-screen flex flex-col">
         <main className="flex-grow">
           <Routes>

@@ -13,9 +13,6 @@ const Navbar = () => {
     const handleScroll = () => {
       // Triggers when user scrolls past 80% of the viewport height (roughly past the hero)
       const heroHeight = window.innerHeight * 0.3;
-      // console.log(heroHeight);
-
-      // console.log(window.scrollY);
       setScrolled(window.scrollY > heroHeight);
     };
 
@@ -37,7 +34,6 @@ const Navbar = () => {
   const handleNavClick = (path) => {
     navigate(path);
     setMobileMenuOpen(false);
-    window.scrollTo(0, 0);
   };
 
   return (
