@@ -12,7 +12,7 @@ import Navbar from "../components/Navbar";
 import axiosInstance from "../services/api";
 
 const LOCATIONS = [
-  "Lagos (Ajah)",
+  "Lagos (Island)",
   "Lagos (Festac)",
   "Abuja",
   "Owerri",
