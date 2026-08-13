@@ -12,6 +12,13 @@ const emptyForm = {
   description: "",
 };
 
+// Strapi's time field expects HH:mm:ss.SSS, but <input type="time">
+// only gives HH:mm — pad it out before sending.
+const toStrapiTime = (value) => {
+  if (!value) return value;
+  return value.length === 5 ? `${value}:00.000` : value;
+};
+
 const EventManager = () => {
   const { token } = useAuth();
   const [events, setEvents] = useState([]);
@@ -98,8 +105,8 @@ const EventManager = () => {
         data: {
           title: form.title,
           date: form.date,
-          start_time: form.start_time,
-          end_time: form.end_time,
+          start_time: toStrapiTime(form.start_time),
+          end_time: toStrapiTime(form.end_time),
           location: form.location,
           description: [
             {
