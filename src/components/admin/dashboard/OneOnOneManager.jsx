@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Loader2, RefreshCw, Download } from "lucide-react";
+import { Loader2, RefreshCw, Download, Trash2, X } from "lucide-react";
 import * as XLSX from "xlsx";
 import { useAuth } from "../../../context/AuthContext";
 import axiosInstance from "../../../services/api";
@@ -9,6 +9,8 @@ const OneOnOneManager = () => {
   const [registrations, setRegistrations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [deletingId, setDeletingId] = useState(null);
+  const [confirmTarget, setConfirmTarget] = useState(null);
 
   const headers = { Authorization: `Bearer ${token}` };
 
@@ -35,6 +37,24 @@ const OneOnOneManager = () => {
   useEffect(() => {
     fetchRegistrations();
   }, []);
+
+  const handleDelete = async (documentId) => {
+    setDeletingId(documentId);
+    try {
+      await axiosInstance.delete(`/one-on-one-registrations/${documentId}`, {
+        headers,
+      });
+      setRegistrations((prev) =>
+        prev.filter((r) => r.documentId !== documentId),
+      );
+      setConfirmTarget(null);
+    } catch (err) {
+      console.error("Failed to delete registration:", err);
+      alert("Failed to delete this registration. Please try again.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   const handleExport = () => {
     const rows = registrations.map((r) => ({
@@ -119,6 +139,7 @@ const OneOnOneManager = () => {
                 <th className="px-4 py-3">Country</th>
                 <th className="px-4 py-3">Preferred Location</th>
                 <th className="px-4 py-3">Date</th>
+                <th className="px-4 py-3 text-right">Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -140,10 +161,71 @@ const OneOnOneManager = () => {
                   <td className="px-4 py-3 text-white/60">
                     {new Date(r.createdAt).toLocaleDateString()}
                   </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      onClick={() => setConfirmTarget(r)}
+                      disabled={deletingId === r.documentId}
+                      className="inline-flex items-center gap-1 bg-red-600/20 hover:bg-red-600/40 text-red-300 hover:text-red-100 rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50"
+                    >
+                      <Trash2 size={14} />
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Confirmation modal */}
+      {confirmTarget && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-slate-900 border border-white/10 rounded-2xl w-full max-w-md shadow-2xl">
+            <div className="flex items-center justify-between p-6 border-b border-white/10">
+              <h3 className="text-white font-black text-lg">
+                Delete Registration
+              </h3>
+              <button
+                onClick={() => setConfirmTarget(null)}
+                className="text-white/50 hover:text-white"
+              >
+                <X size={20} />
+              </button>
+            </div>
+
+            <div className="p-6 space-y-4">
+              <p className="text-blue-200 text-sm">
+                Are you sure you want to delete the registration for:
+              </p>
+              <div className="bg-white/5 border border-white/10 rounded-xl px-4 py-3">
+                <p className="text-white font-bold">{confirmTarget.name}</p>
+                <p className="text-blue-300 text-sm">{confirmTarget.email}</p>
+              </div>
+              <p className="text-red-300 text-sm">
+                This action cannot be undone.
+              </p>
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => setConfirmTarget(null)}
+                  className="flex-1 border border-white/20 text-white py-2.5 rounded-xl font-bold hover:bg-white/10 transition text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => handleDelete(confirmTarget.documentId)}
+                  disabled={deletingId === confirmTarget.documentId}
+                  className="flex-1 bg-red-600 hover:bg-red-700 text-white py-2.5 rounded-xl font-bold transition text-sm disabled:opacity-60 flex items-center justify-center gap-2"
+                >
+                  <Trash2 size={16} />
+                  {deletingId === confirmTarget.documentId
+                    ? "Deleting..."
+                    : "Delete"}
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>
