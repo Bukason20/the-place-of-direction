@@ -4,6 +4,8 @@ import * as XLSX from "xlsx";
 import { useAuth } from "../../../context/AuthContext";
 import axiosInstance from "../../../services/api";
 
+const PAGE_SIZE = 100; // Strapi's default REST maxLimit — loop past this rather than raise it blindly
+
 const OneOnOneManager = () => {
   const { token } = useAuth();
   const [registrations, setRegistrations] = useState([]);
@@ -18,14 +20,26 @@ const OneOnOneManager = () => {
     setLoading(true);
     setError("");
     try {
-      const res = await axiosInstance.get("/one-on-one-registrations", {
-        headers,
-        params: {
-          sort: "createdAt:desc",
-          pagination: { pageSize: 200 },
-        },
-      });
-      setRegistrations(res.data?.data || []);
+      let page = 1;
+      let all = [];
+      let pageCount = 1;
+
+      do {
+        const res = await axiosInstance.get("/one-on-one-registrations", {
+          headers,
+          params: {
+            sort: "createdAt:desc",
+            "pagination[page]": page,
+            "pagination[pageSize]": PAGE_SIZE,
+          },
+        });
+
+        all = all.concat(res.data?.data || []);
+        pageCount = res.data?.meta?.pagination?.pageCount || 1;
+        page += 1;
+      } while (page <= pageCount);
+
+      setRegistrations(all);
     } catch (err) {
       console.error("Failed to fetch registrations:", err);
       setError("Could not load registrations.");
