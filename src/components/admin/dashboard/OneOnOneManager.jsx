@@ -1,10 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { Loader2, RefreshCw, Download, Trash2, X } from "lucide-react";
+import React, { useEffect, useMemo, useState } from "react";
+import {
+  Loader2,
+  RefreshCw,
+  Download,
+  Trash2,
+  X,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import * as XLSX from "xlsx";
 import { useAuth } from "../../../context/AuthContext";
 import axiosInstance from "../../../services/api";
 
-const PAGE_SIZE = 100; // Strapi's default REST maxLimit — loop past this rather than raise it blindly
+const FETCH_PAGE_SIZE = 100; // Strapi's default REST maxLimit — loop past this to get everything
+const DISPLAY_PAGE_SIZE = 100; // how many rows to show per page in the table
 
 const OneOnOneManager = () => {
   const { token } = useAuth();
@@ -13,6 +22,7 @@ const OneOnOneManager = () => {
   const [error, setError] = useState("");
   const [deletingId, setDeletingId] = useState(null);
   const [confirmTarget, setConfirmTarget] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const headers = { Authorization: `Bearer ${token}` };
 
@@ -30,7 +40,7 @@ const OneOnOneManager = () => {
           params: {
             sort: "createdAt:desc",
             "pagination[page]": page,
-            "pagination[pageSize]": PAGE_SIZE,
+            "pagination[pageSize]": FETCH_PAGE_SIZE,
           },
         });
 
@@ -40,6 +50,7 @@ const OneOnOneManager = () => {
       } while (page <= pageCount);
 
       setRegistrations(all);
+      setCurrentPage(1);
     } catch (err) {
       console.error("Failed to fetch registrations:", err);
       setError("Could not load registrations.");
@@ -70,6 +81,7 @@ const OneOnOneManager = () => {
     }
   };
 
+  // Exports everything, regardless of which page is currently being viewed
   const handleExport = () => {
     const rows = registrations.map((r) => ({
       Name: r.name,
@@ -94,6 +106,28 @@ const OneOnOneManager = () => {
 
     XLSX.writeFile(workbook, `one-on-one-registrations-${dateStamp}.xlsx`);
   };
+
+  const totalPages = Math.max(
+    1,
+    Math.ceil(registrations.length / DISPLAY_PAGE_SIZE),
+  );
+
+  const pageRows = useMemo(() => {
+    const start = (currentPage - 1) * DISPLAY_PAGE_SIZE;
+    return registrations.slice(start, start + DISPLAY_PAGE_SIZE);
+  }, [registrations, currentPage]);
+
+  const goToPage = (page) => {
+    const clamped = Math.min(Math.max(1, page), totalPages);
+    setCurrentPage(clamped);
+  };
+
+  const rangeStart =
+    registrations.length === 0 ? 0 : (currentPage - 1) * DISPLAY_PAGE_SIZE + 1;
+  const rangeEnd = Math.min(
+    currentPage * DISPLAY_PAGE_SIZE,
+    registrations.length,
+  );
 
   return (
     <div>
@@ -142,54 +176,88 @@ const OneOnOneManager = () => {
       )}
 
       {!loading && registrations.length > 0 && (
-        <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="bg-white/5 text-blue-200 uppercase text-xs">
-              <tr>
-                <th className="px-4 py-3">Name</th>
-                <th className="px-4 py-3">Email</th>
-                <th className="px-4 py-3">Phone</th>
-                <th className="px-4 py-3">WhatsApp</th>
-                <th className="px-4 py-3">Country</th>
-                <th className="px-4 py-3">Preferred Location</th>
-                <th className="px-4 py-3">Date</th>
-                <th className="px-4 py-3 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {registrations.map((r) => (
-                <tr
-                  key={r.id}
-                  className="border-t border-white/10 text-white/90"
-                >
-                  <td className="px-4 py-3">{r.name}</td>
-                  <td className="px-4 py-3">{r.email}</td>
-                  <td className="px-4 py-3">{r.phoneNumber}</td>
-                  <td className="px-4 py-3">{r.whatsappNumber}</td>
-                  <td className="px-4 py-3">{r.countryOfResidence}</td>
-                  <td className="px-4 py-3">
-                    {r.preferredLocation === "Other"
-                      ? r.otherLocationDetail
-                      : r.preferredLocation}
-                  </td>
-                  <td className="px-4 py-3 text-white/60">
-                    {new Date(r.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => setConfirmTarget(r)}
-                      disabled={deletingId === r.documentId}
-                      className="inline-flex items-center gap-1 bg-red-600/20 hover:bg-red-600/40 text-red-300 hover:text-red-100 rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50"
-                    >
-                      <Trash2 size={14} />
-                      Delete
-                    </button>
-                  </td>
+        <>
+          <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden overflow-x-auto">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-white/5 text-blue-200 uppercase text-xs">
+                <tr>
+                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Email</th>
+                  <th className="px-4 py-3">Phone</th>
+                  <th className="px-4 py-3">WhatsApp</th>
+                  <th className="px-4 py-3">Country</th>
+                  <th className="px-4 py-3">Preferred Location</th>
+                  <th className="px-4 py-3">Date</th>
+                  <th className="px-4 py-3 text-right">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {pageRows.map((r) => (
+                  <tr
+                    key={r.id}
+                    className="border-t border-white/10 text-white/90"
+                  >
+                    <td className="px-4 py-3">{r.name}</td>
+                    <td className="px-4 py-3">{r.email}</td>
+                    <td className="px-4 py-3">{r.phoneNumber}</td>
+                    <td className="px-4 py-3">{r.whatsappNumber}</td>
+                    <td className="px-4 py-3">{r.countryOfResidence}</td>
+                    <td className="px-4 py-3">
+                      {r.preferredLocation === "Other"
+                        ? r.otherLocationDetail
+                        : r.preferredLocation}
+                    </td>
+                    <td className="px-4 py-3 text-white/60">
+                      {new Date(r.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="px-4 py-3 text-right">
+                      <button
+                        onClick={() => setConfirmTarget(r)}
+                        disabled={deletingId === r.documentId}
+                        className="inline-flex items-center gap-1 bg-red-600/20 hover:bg-red-600/40 text-red-300 hover:text-red-100 rounded-lg px-3 py-1.5 text-xs font-semibold transition disabled:opacity-50"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Pagination controls */}
+          {totalPages > 1 && (
+            <div className="flex items-center justify-between mt-4 flex-wrap gap-3">
+              <p className="text-blue-300 text-xs">
+                Showing {rangeStart}–{rangeEnd} of {registrations.length}
+              </p>
+
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="flex items-center gap-1 bg-white/10 hover:bg-white/20 text-white text-sm font-semibold px-3 py-2 rounded-lg transition disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft size={16} />
+                  Prev
+                </button>
+
+                <span className="text-blue-200 text-sm font-medium px-2">
+                  Page {currentPage} of {totalPages}
+                </span>
+
+                <button
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="flex items-center gap-1 bg-white/10 hover:bg-white/20 text-white text-sm font-semibold px-3 py-2 rounded-lg transition disabled:opacity-30 disabled:cursor-not-allowed"
+                >
+                  Next
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            </div>
+          )}
+        </>
       )}
 
       {/* Confirmation modal */}
