@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, ArrowLeft, Loader2 } from "lucide-react";
+import { CheckCircle, ArrowLeft, Loader2, CalendarX } from "lucide-react";
 import Navbar from "../components/Navbar";
 import axiosInstance from "../services/api";
 
@@ -34,6 +34,7 @@ const OneOnOneRegistrationPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
+  const [expired, setExpired] = useState(true);
 
   const update = (field, value) => setForm((f) => ({ ...f, [field]: value }));
 
@@ -129,6 +130,50 @@ const OneOnOneRegistrationPage = () => {
     );
   }
 
+  if (expired) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-purple-900 relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-400 rounded-full mix-blend-screen filter blur-3xl opacity-15 animate-pulse" />
+        <div className="absolute bottom-0 left-0 w-72 h-72 bg-purple-500 rounded-full mix-blend-screen filter blur-3xl opacity-10 animate-pulse" />
+
+        <div className="relative">
+          <Navbar />
+        </div>
+
+        <div className="relative max-w-xl mx-auto px-4 pt-44 pb-24 text-center">
+          <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-3xl p-10 shadow-2xl">
+            <div className="inline-flex p-5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-2xl mb-6 shadow-lg">
+              <CalendarX size={40} className="text-white" />
+            </div>
+
+            <h1 className="text-3xl font-black text-white mb-3">
+              Registration is Closed
+            </h1>
+            <p className="text-blue-100 leading-relaxed mb-8">
+              Registration for this year's One-on-One program has ended, so this
+              link is no longer available. Please check back when the next
+              season opens.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <button
+                onClick={() => navigate("/one-on-one")}
+                className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-xl font-bold hover:shadow-lg hover:scale-105 transition"
+              >
+                About One-on-One
+              </button>
+              <button
+                onClick={() => navigate("/")}
+                className="border border-white/30 text-white px-6 py-3 rounded-xl font-bold hover:bg-white/10 transition"
+              >
+                Back to Home
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="relative">
