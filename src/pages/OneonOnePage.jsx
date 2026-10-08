@@ -87,9 +87,10 @@ const OneonOnePage = () => {
 
               <button
                 onClick={() => navigate("/one-on-one/register")}
+                disabled
                 className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-10 py-4 rounded-xl font-bold hover:shadow-xl hover:scale-105 transition text-lg"
               >
-                <span>Schedule a Session</span>
+                <span>Coming Soon</span>
                 <ChevronRight size={20} />
               </button>
             </div>
